@@ -1,0 +1,31 @@
+!!! 5
+%html
+  %head
+    %meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
+    %title GROUP VIEWQVZ
+    %link(rel='stylesheet' href='/site.css' type='text/css' media='screen' title='default style sheet')
+  %body
+    #content
+      #header
+        %h1 Flickr Group Viewer
+      #index
+        %p 
+          Use Flickr Group Viewer to quickly browse through the photographs in a
+          flickr group. Drop the group URL into the form below. You can browse 
+          between photographs (and pages) using the j/k keys on your keyboard.
+        %p
+          %form(action='/group' method='post')
+            %label(for='url') Flickr Group URL:
+            %input#searchbox(type='text' name='url' value='http://flickr.com/groups/onthestreet')
+            %input#ok(type='submit' value='OK')      
+        %p
+        :markdown
+          Example galleries: [Photographs on the Brain][1], [HCSP][2], [La Pura Vida][3], [Your Photo Isn't that Great][4], Contract Killers[5].
+
+          [1]: /group/photographsonthebrain
+          [2]: /group/onthestreet
+          [3]: /group/lapuravida
+          [4]: /group/yousuck
+          [5]: /group/the-hit
+      #footer
+        %p Site designed and built by <a href="http://funkaoshi.com">Ramanan Sivaranjan</a>.

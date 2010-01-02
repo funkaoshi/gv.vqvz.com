@@ -1,0 +1,19 @@
+!!! 5
+%html
+  %head
+    %meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
+    %title GROUP VIEWQVZ :: WTF?!
+    %link(rel='stylesheet' href='/site.css' type='text/css' media='screen' title='default style sheet')
+  %body
+    #content
+      #header
+        %h1 WTF?!
+      #index
+        %p Yeah, so something went wrong. Who knows what? Let's not play the blame game.
+        %p
+          %form(action='/group' method='post')
+            %label(for='url') View another group?
+            %input#searchbox(type='text' name='url' value='http://flickr.com/groups/onthestreet')
+            %input#ok(type='submit' value='OK')
+      #footer
+        %p Site designed and built by <a href="http://funkaoshi.com">Ramanan Sivaranjan</a>.
