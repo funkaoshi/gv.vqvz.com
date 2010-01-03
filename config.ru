@@ -16,5 +16,5 @@ use Rack::Cache,
     :allow_reload => false,
     :allow_revalidate => false
 
-require 'vqvz.rb'
+require 'groupviewer.rb'
 run Sinatra::Application
