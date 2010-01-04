@@ -76,7 +76,7 @@ helpers do
       else
         "<a class='prev_page' href='/group/#{@group_id}?pg=#{@page-1}'>Prev</a>"
       end
-    "<span class='nav'>#{prev_link} | #{@page} of #{@pages} | #{next_link}</span>"
+    "#{prev_link} | #{@page} of #{@pages} | #{next_link}"
   end
 end
 

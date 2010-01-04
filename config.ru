@@ -12,9 +12,7 @@ Sinatra::Base.set(:env, :production);
 use Rack::Cache,
     :verbose => true,
     :metastore => "file:cache/meta",
-    :entitystore => "file:cache/body",
-    :allow_reload => false,
-    :allow_revalidate => false
+    :entitystore => "file:cache/body"
 
 require 'groupviewer.rb'
 run Sinatra::Application
