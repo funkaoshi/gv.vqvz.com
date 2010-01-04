@@ -33,9 +33,9 @@ end
 helpers do
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
+    params = { :group_id => group }
     params[:per_page] = 30 unless page == 0
     params[:page] = page unless page == 0
-    params[:group_id] = group
     begin
       photos = flickr.groups.pools.getPhotos(params)
       group_info = flickr.groups.getInfo(:group_id => group)
@@ -53,10 +53,7 @@ helpers do
   def build_sequence(photos)
     return [] if photos.nil?
     photos.map do |photo|
-      sizes = flickr.photos.getSizes(:photo_id => photo.id)
-      size = sizes.find { |s| s.label == 'Medium'}
-      flickr_url = size.url[0..-9]
-      Image.new(photo.id, size.source, flickr_url)
+      Image.new(photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo))
     end
   end
 
