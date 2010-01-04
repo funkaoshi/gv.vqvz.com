@@ -2,6 +2,17 @@ require File.dirname(__FILE__) + '/vendor/sinatra/lib/sinatra.rb'
 require 'flickraw'
 require 'haml'
 
+# make nicer photostream URLs than Flickraw does by default.
+module FlickRaw
+  def self.url_photostream(r)
+    if r.respond_to?(:pathalias) && r.pathalias != nil
+      URL_PHOTOSTREAM + (r.pathalias) + '/'
+    else
+      URL_PHOTOSTREAM + (r.owner.respond_to?(:nsid) ? r.owner.nsid : r.owner) + '/'
+    end
+  end
+end
+
 # Some basic information about an image (on Flickr)
 class Image
   attr_accessor :id, :img_url, :flickr_url
@@ -33,7 +44,7 @@ end
 helpers do
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
-    params = { :group_id => group }
+    params = { :group_id => group, :extras => 'path_alias' }
     params[:per_page] = 30 unless page == 0
     params[:page] = page unless page == 0
     begin
