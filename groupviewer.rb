@@ -5,10 +5,14 @@ require 'haml'
 # make nicer photostream URLs than Flickraw does by default.
 module FlickRaw
   def self.url_photostream(r)
-    if r.respond_to?(:pathalias) && r.pathalias != nil
-      URL_PHOTOSTREAM + (r.pathalias) + '/'
-    else
-      URL_PHOTOSTREAM + (r.owner.respond_to?(:nsid) ? r.owner.nsid : r.owner) + '/'
+    URL_PHOTOSTREAM +
+      if r.respond_to?(:pathalias) && r.pathalias
+        r.pathalias
+      elsif r.owner.respond_to?(:nsid) 
+        r.owner.nsid
+      else
+        r.owner
+      end + '/'
     end
   end
 end
@@ -27,6 +31,9 @@ end
 # Sinatra !!
 
 configure do
+  # Set API Key
+  FlickRaw.api_key = 'd14c1db0be6b1519a09274054a8be802'
+
   # use HTML5 when generating HTML
   set :haml, :format => :html5
 
