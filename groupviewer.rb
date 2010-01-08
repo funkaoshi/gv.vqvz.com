@@ -6,14 +6,13 @@ require 'haml'
 module FlickRaw
   def self.url_photostream(r)
     URL_PHOTOSTREAM +
-      if r.respond_to?(:pathalias) && r.pathalias
+      if r.respond_to?(:pathalias) and r.pathalias
         r.pathalias
-      elsif r.owner.respond_to?(:nsid) 
+      elsif r.owner.respond_to?(:nsid)
         r.owner.nsid
       else
         r.owner
-      end + '/'
-    end
+      end + "/"
   end
 end
 
