@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/vendor/sinatra/lib/sinatra.rb'
+require 'sinatra'
 require 'flickraw'
 require 'haml'
 

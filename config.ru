@@ -1,6 +1,6 @@
 require 'dreamhost.rb' # loads rubygems on Dreamhost.
 
-require 'vendor/sinatra/lib/sinatra.rb'
+require 'sinatra'
 Sinatra::Base.set(:run, false)
 Sinatra::Base.set(:env, :production);
 
