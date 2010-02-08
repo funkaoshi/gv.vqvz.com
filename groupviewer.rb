@@ -38,6 +38,9 @@ configure do
 
   # set the last mod time to now, when the app starts up. Updated via /update/now
   @@last_mod_time = Time.now
+  
+  ## for google analytics
+  @@analytics_token = 'UA-2675737-8'
 end
 
 before do
