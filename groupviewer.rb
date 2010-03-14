@@ -18,12 +18,12 @@ end
 
 # Some basic information about an image (on Flickr)
 class Image
-  attr_accessor :id, :img_url, :flickr_url
+  attr_accessor :id, :img_url, :flickr_url, :title, :photographer
   
-  def initialize(id, img_url, flickr_url)
-    @id = id
-    @img_url = img_url
-    @flickr_url = flickr_url
+  def initialize(photo)
+    @id, @img_url, @flickr_url = photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo)
+    @photographer = "<a href='#{FlickRaw::url_photostream(photo)}'>#{photo.ownername}</a>"
+    @title = photo.title.empty? ? 'untitled' : photo.title
   end
 end
 
@@ -48,12 +48,12 @@ before do
     expires 300, :public, :must_revalidate  # always cache for 5 minutes ...
     last_modified(@@last_mod_time)          # ... and rely on 304 query after that
   end
-end
+end  
 
 helpers do
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
-    params = { :group_id => group, :extras => 'path_alias' }
+    params = { :group_id => group, :extras => 'path_alias, ownername' }
     params[:per_page] = 30 unless page == 0
     params[:page] = page unless page == 0
     begin
@@ -73,7 +73,7 @@ helpers do
   def build_sequence(photos)
     return [] if photos.nil?
     photos.map do |photo|
-      Image.new(photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo))
+      Image.new(photo)
     end
   end
 

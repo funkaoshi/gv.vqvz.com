@@ -1,26 +1,30 @@
 body {
     margin:0; padding:0;
-    font:1em/1.3em "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
-    background:#FFF;
-    color:#555;
+    font:12px/16px Calibri, Helvetica, Arial, sans-serif;    
+    background:#000;
+    color:#FFF;
+    border-right:15px solid white;
 }
 
 #content {
-    margin:40px;
-    padding:0;
+  margin:0; padding:40px; width:520px;
+  background:#FFF;
+  color:#000;
+  
 }
 
-footer {
+h1 {
+  font: 24px/32px Futura, "Bank Gothic", "Gotham", "Century Gothic", sans-serif;
+  text-transform: uppercase;
+}
+
+#footer {
    color: #777;
    margin-top:40px;
 }
 
 #index, #images {
     width:520px;
-}
-
-#images p {
-    margin:0;
 }
 
 #searchbox {
@@ -30,16 +34,29 @@ label + #searchbox {
    margin-left:5px;
 }
 
+#header p {
+  margin:0;padding-top:4px;
+}
+
+#header, .photo {
+  margin-bottom:40px;
+}
+
 .photo img {
-    padding:10px;
-    margin:20px 0;    
+    padding:10px;margin:0;
     background:black;
 }
+
+.photo p {
+  font-size:10px;
+  color:gray;
+}
+
 
 a {
     text-decoration: none;
     font-weight: bold;
-    color: #222;
+    color: #228;
     border: 0;
 }
 

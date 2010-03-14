@@ -9,23 +9,23 @@
     %script(type='text/javascript' src='/paging_keys.js')
   %body
     #content
-      %header
+      #header
         %h1 Viewing #{@name}
         %form(action='/group' method='post')
           %p
             %label(for='searchbox') View another group?
             %input#searchbox(type='url' name='url' value='http://flickr.com/groups/onthestreet')
             %input#ok(type='submit' value='OK')
+        #nav
+          %p= "#{nav_links} &nbsp; &nbsp; &nbsp; j/k keys will move between photos (and pages)"    
       #images
-        %nav
-          %p= nav_links
-          %p j/k keys will move between photos (and pages)
         - @sequence.each do |img|
           .photo.hentry{:id => img.id}
             %a{:href => img.flickr_url}>
               %img{:src => img.img_url}>
+            %p= "#{img.title} by #{img.photographer}"
         %nav
           %p= nav_links
-      %footer
+      #footer
         %p Site designed and built by <a href="http://funkaoshi.com">Ramanan Sivaranjan</a>.
     = haml(:_analytics, :layout => false)
