@@ -19,7 +19,7 @@ end
 # Some basic information about an image (on Flickr)
 class Image
   attr_accessor :id, :img_url, :flickr_url, :title, :photographer
-  
+
   def initialize(photo)
     @id, @img_url, @flickr_url = photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo)
     @photographer = "<a href='#{FlickRaw::url_photostream(photo)}'>#{photo.ownername}</a>"
@@ -38,7 +38,7 @@ configure do
 
   # set the last mod time to now, when the app starts up. Updated via /update/now
   @@last_mod_time = Time.now
-  
+
   ## for google analytics
   @@analytics_token = 'UA-2675737-8'
 end
@@ -48,12 +48,12 @@ before do
     expires 300, :public, :must_revalidate  # always cache for 5 minutes ...
     last_modified(@@last_mod_time)          # ... and rely on 304 query after that
   end
-end  
+end
 
 helpers do
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
-    params = { :group_id => group, :extras => 'path_alias, ownername' }
+    params = { :group_id => group, :extras => 'path_alias, owner_name' }
     params[:per_page] = 30 unless page == 0
     params[:page] = page unless page == 0
     begin
@@ -69,6 +69,22 @@ helpers do
     @sequence = build_sequence(photos)
   end
 
+  def load_favs(user_name, page)
+    user_id = flickr.people.findByUsername(:username => user_name).id
+    params = { :user_id => user_id, :extras => 'path_alias, owner_name' }
+    params[:per_page] = 30 unless page == 0
+    params[:page] = page unless page == 0
+    begin
+      photos = flickr.favorites.getPublicList(params)
+    rescue FlickRaw::FailedResponse => e
+      halt 404
+    end
+    @name = "#{user_name}'s Favourites"
+    @page = page.to_i
+    @pages = photos.pages
+    @sequence = build_sequence(photos)
+  end
+
   # build list of images.
   def build_sequence(photos)
     return [] if photos.nil?
@@ -78,13 +94,13 @@ helpers do
   end
 
   def nav_links
-    next_link = 
-      if @page == @pages 
-        "Next" 
-      else      
+    next_link =
+      if @page == @pages
+        "Next"
+      else
         "<a class='next_page' href='/group/#{@group_id}?pg=#{@page+1}'>Next</a>"
       end
-    prev_link = 
+    prev_link =
       case @page
       when 1
         "Prev"
@@ -101,6 +117,13 @@ end
 
 get '/' do
   haml :index
+end
+
+get '/favs/:user_id' do |user_name|
+  page = params['pg']
+  page ||= 1
+  load_favs(user_name, page)
+  haml :group
 end
 
 get '/group/:group_id/?' do |group|
