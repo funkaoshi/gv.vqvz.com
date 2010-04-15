@@ -64,6 +64,7 @@ helpers do
     end
     @group_id = group
     @name = group_info.name
+    @mode = 'group'
     @page = page.to_i
     @pages = photos.pages
     @sequence = build_sequence(photos)
@@ -80,6 +81,8 @@ helpers do
       halt 404
     end
     @name = "#{user_name}'s Favourites"
+    @group_id = user_name
+    @mode = 'favs'
     @page = page.to_i
     @pages = photos.pages
     @sequence = build_sequence(photos)
@@ -98,16 +101,16 @@ helpers do
       if @page == @pages
         "Next"
       else
-        "<a class='next_page' href='/group/#{@group_id}?pg=#{@page+1}'>Next</a>"
+        "<a class='next_page' href='/#{@mode}/#{@group_id}?pg=#{@page+1}'>Next</a>"
       end
     prev_link =
       case @page
       when 1
         "Prev"
       when 2
-        "<a class='prev_page' href='/group/#{@group_id}'>Prev</a>"
+        "<a class='prev_page' href='/#{@mode}/#{@group_id}'>Prev</a>"
       else
-        "<a class='prev_page' href='/group/#{@group_id}?pg=#{@page-1}'>Prev</a>"
+        "<a class='prev_page' href='/#{@mode}/#{@group_id}?pg=#{@page-1}'>Prev</a>"
       end
     "#{prev_link} | #{@page} of #{@pages} | #{next_link}"
   end
