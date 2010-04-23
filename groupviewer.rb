@@ -37,16 +37,16 @@ configure do
   set :haml, :format => :html5
 
   # set the last mod time to now, when the app starts up. Updated via /update/now
-  @@last_mod_time = Time.now
+  @last_mod_time = Time.now
 
   ## for google analytics
-  @@analytics_token = 'UA-2675737-8'
+  @analytics_token = 'UA-2675737-8'
 end
 
 before do
   unless request.path_info =~ /update/
     expires 300, :public, :must_revalidate  # always cache for 5 minutes ...
-    last_modified(@@last_mod_time)          # ... and rely on 304 query after that
+    last_modified(@last_mod_time)          # ... and rely on 304 query after that
   end
 end
 
@@ -153,11 +153,11 @@ end
 # Lame web-cache thing which I don't think really works.
 
 get '/update/now' do
-  @@last_mod_time = Time.now
+  @last_mod_time = Time.now
 end
 
 get '/update/show' do
-  "Last-Update: #{@@last_mod_time}"
+  "Last-Update: #{@last_mod_time}"
 end
 
 # Error Handlers in Production
