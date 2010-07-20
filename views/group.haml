@@ -3,14 +3,14 @@
   %head
     %meta(charset='utf-8')
     %meta(name='viewport' content='width=680, maximum-scale=1.0')
-    %title GROUP VIEWQVZ :: #{@name}
+    %title GROUP VIEWQVZ :: #{@list.title}
     %link(rel='stylesheet' href='/site.css' type='text/css' media='screen' title='default style sheet')
     %script(type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js')
     %script(type='text/javascript' src='/paging_keys.js')
   %body
     #content
       #header
-        %h1 Viewing #{@name}
+        %h1 Viewing #{@list.title}
         %form(action='/group' method='post')
           %p
             %label(for='searchbox') View another group?
@@ -19,7 +19,7 @@
         #nav
           %p= "#{nav_links} &nbsp; &nbsp; &nbsp; j/k keys will move between photos (and pages)"
       #images
-        - @sequence.each do |img|
+        - @list.sequence.each do |img|
           .photo.hentry{:id => img.id}
             %a{:href => img.flickr_url}>
               %img{:src => img.img_url}>

@@ -2,17 +2,11 @@ require 'sinatra'
 require 'flickraw'
 require 'haml'
 
-# make nicer photostream URLs than Flickraw does by default.
-module FlickRaw
-  def self.url_photostream(r)
-    URL_PHOTOSTREAM +
-      if r.respond_to?(:pathalias) and r.pathalias
-        r.pathalias
-      elsif r.owner.respond_to?(:nsid)
-        r.owner.nsid
-      else
-        r.owner
-      end + "/"
+# Models and the like 
+
+class String
+  def is_untitled?
+    return self.empty? || self == '.' || self =~ /IMG_/ || self =~ /DSC_/
   end
 end
 
@@ -23,9 +17,19 @@ class Image
   def initialize(photo)
     @id, @img_url, @flickr_url = photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo)
     @photographer = "<a href='#{FlickRaw::url_photostream(photo)}'>#{photo.ownername}</a>"
-    @title = photo.title.empty? ? 'untitled' : photo.title
+    @title = photo.title.is_untitled? ? 'untitled' : photo.title
   end
 end
+
+# All the information about a page of images that need to be displayed
+class ImageListing
+  attr_accessor :flickr_id, :title, :page, :pages, :sequence
+  
+  def initialize(id, title, page, pages, sequence)
+    @flickr_id, @title, @page, @pages, @sequence = id, title, page, pages, sequence
+  end
+end
+
 
 # Sinatra !!
 
@@ -50,42 +54,38 @@ before do
   end
 end
 
-helpers do
+helpers do  
+  def set_paging(params, page)
+    params[:per_page] = 30 unless page == 0
+    params[:page] = page unless page == 0
+  end
+  
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
     params = { :group_id => group, :extras => 'path_alias, owner_name' }
-    params[:per_page] = 30 unless page == 0
-    params[:page] = page unless page == 0
+    set_paging(params, page)
     begin
       photos = flickr.groups.pools.getPhotos(params)
       group_info = flickr.groups.getInfo(:group_id => group)
     rescue FlickRaw::FailedResponse => e
       halt 404
     end
-    @group_id = group
-    @name = group_info.name
-    @mode = 'group'
-    @page = page.to_i
-    @pages = photos.pages
-    @sequence = build_sequence(photos)
+    @list = ImageListing.new(group, group_info.name, page.to_i, photos.pages, build_sequence(photos))
+    @mode = "group"
   end
 
+  # Loads 30 medium images from a flickr user
   def load_favs(user_name, page)
     user_id = flickr.people.findByUsername(:username => user_name).id
     params = { :user_id => user_id, :extras => 'path_alias, owner_name' }
-    params[:per_page] = 30 unless page == 0
-    params[:page] = page unless page == 0
+    set_paging(params, page)
     begin
       photos = flickr.favorites.getPublicList(params)
     rescue FlickRaw::FailedResponse => e
       halt 404
     end
-    @name = "#{user_name}'s Favourites"
-    @group_id = user_name
-    @mode = 'favs'
-    @page = page.to_i
-    @pages = photos.pages
-    @sequence = build_sequence(photos)
+    @list = ImageListing.new(user_name, "#{user_name}'s Favourites", page.to_i, photos.pages, build_sequence(photos))
+    @mode = "favs"
   end
 
   # build list of images.
@@ -98,21 +98,21 @@ helpers do
 
   def nav_links
     next_link =
-      if @page == @pages
+      if @list.page == @list.pages
         "Next"
       else
-        "<a class='next_page' href='/#{@mode}/#{@group_id}?pg=#{@page+1}'>Next</a>"
+        "<a class='next_page' href='/#{@mode}/#{@list.flickr_id}?pg=#{@list.page+1}'>Next</a>"
       end
     prev_link =
-      case @page
+      case @list.page
       when 1
         "Prev"
       when 2
-        "<a class='prev_page' href='/#{@mode}/#{@group_id}'>Prev</a>"
+        "<a class='prev_page' href='/#{@mode}/#{@list.flickr_id}'>Prev</a>"
       else
-        "<a class='prev_page' href='/#{@mode}/#{@group_id}?pg=#{@page-1}'>Prev</a>"
+        "<a class='prev_page' href='/#{@mode}/#{@list.flickr_id}?pg=#{@list.page-1}'>Prev</a>"
       end
-    "#{prev_link} | #{@page} of #{@pages} | #{next_link}"
+    "#{prev_link} | #{@list.page} of #{@list.pages} | #{next_link}"
   end
 end
 
