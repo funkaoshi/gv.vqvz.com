@@ -71,7 +71,6 @@ helpers do
       halt 404
     end
     @list = ImageListing.new(group, group_info.name, page.to_i, photos.pages, build_sequence(photos))
-    @mode = "group"
   end
 
   # Loads 30 medium images from a flickr user
@@ -85,7 +84,6 @@ helpers do
       halt 404
     end
     @list = ImageListing.new(user_name, "#{user_name}'s Favourites", page.to_i, photos.pages, build_sequence(photos))
-    @mode = "favs"
   end
 
   # build list of images.
@@ -97,20 +95,21 @@ helpers do
   end
 
   def nav_links
+    mode = request.path_info.split('/')[1]
     next_link =
       if @list.page == @list.pages
         "Next"
       else
-        "<a class='next_page' href='/#{@mode}/#{@list.flickr_id}?pg=#{@list.page+1}'>Next</a>"
+        "<a class='next_page' href='/#{mode}/#{@list.flickr_id}?pg=#{@list.page+1}'>Next</a>"
       end
     prev_link =
       case @list.page
       when 1
         "Prev"
       when 2
-        "<a class='prev_page' href='/#{@mode}/#{@list.flickr_id}'>Prev</a>"
+        "<a class='prev_page' href='/#{mode}/#{@list.flickr_id}'>Prev</a>"
       else
-        "<a class='prev_page' href='/#{@mode}/#{@list.flickr_id}?pg=#{@list.page-1}'>Prev</a>"
+        "<a class='prev_page' href='/#{mode}/#{@list.flickr_id}?pg=#{@list.page-1}'>Prev</a>"
       end
     "#{prev_link} | #{@list.page} of #{@list.pages} | #{next_link}"
   end
