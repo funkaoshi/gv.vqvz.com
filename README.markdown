@@ -5,8 +5,9 @@ paging_keys.js written by hiddenloop.][2] There is some code in the repo I use
 to run this on Dreamhost.
 
 TODO:
- * Support URLs of the form: gv.vqvz.com/group/<group url name>, for example,
-   gv.vqvz.com/group/photographsonthebrain rather gv.vqvz.com/group/755579@N24
+ - Support URLs of the form: `gv.vqvz.com/group/<group url name>`, for example,
+   `gv.vqvz.com/group/photographsonthebrain` rather than `gv.vqvz.com/group/755579@N24`
+ - Expose fav's functionality
 
 [1]: http://sinatrarb.com "Sinatra's website."
 [2]: http://github.com/hiddenloop/paging_keys_js "paging_keys_js github page."
