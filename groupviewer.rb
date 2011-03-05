@@ -2,7 +2,7 @@ require 'sinatra'
 require 'flickraw'
 require 'haml'
 
-# Models and the like 
+# Models and the like
 
 class String
   def is_untitled?
@@ -15,7 +15,7 @@ class Image
   attr_accessor :id, :img_url, :flickr_url, :title, :photographer
 
   def initialize(photo)
-    @id, @img_url, @flickr_url = photo.id, FlickRaw::url(photo), FlickRaw::url_photopage(photo)
+    @id, @img_url, @flickr_url = photo.id, FlickRaw::url_z(photo), FlickRaw::url_photopage(photo)
     @photographer = "<a href='#{FlickRaw::url_photostream(photo)}'>#{photo.ownername}</a>"
     @title = photo.title.is_untitled? ? 'untitled' : photo.title
   end
@@ -24,7 +24,7 @@ end
 # All the information about a page of images that need to be displayed
 class ImageListing
   attr_accessor :flickr_id, :title, :page, :pages, :sequence
-  
+
   def initialize(id, title, page, pages, sequence)
     @flickr_id, @title, @page, @pages, @sequence = id, title, page, pages, sequence
   end
@@ -54,12 +54,12 @@ before do
   end
 end
 
-helpers do  
+helpers do
   def set_paging(params, page)
     params[:per_page] = 30 unless page == 0
     params[:page] = page unless page == 0
   end
-  
+
   # Loads 30 medium images from the flickr group
   def load_group(group, page)
     params = { :group_id => group, :extras => 'path_alias, owner_name' }
